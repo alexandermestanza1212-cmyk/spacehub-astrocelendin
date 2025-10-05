@@ -1,0 +1,218 @@
+/* MissionLocationPage.css */
+.mission-location-page {
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.location-background {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0a1628 0%, #0f1e36 50%, #1a2845 100%);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+}
+
+/* Efecto de estrellas animadas */
+.location-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(2px 2px at 10% 20%, white, transparent),
+    radial-gradient(2px 2px at 80% 80%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 90% 10%, white, transparent),
+    radial-gradient(2px 2px at 30% 70%, white, transparent),
+    radial-gradient(1px 1px at 70% 30%, white, transparent),
+    radial-gradient(1px 1px at 20% 90%, white, transparent),
+    radial-gradient(1px 1px at 60% 60%, white, transparent);
+  background-size: 100% 100%;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Header */
+.location-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  z-index: 10;
+}
+
+.logo-container {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.logo-spacehub {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+}
+
+.logo-designer {
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: #3b82f6;
+}
+
+.menu-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.menu-icon {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 24px;
+}
+
+.menu-icon span {
+  height: 2px;
+  background: white;
+  border-radius: 2px;
+  display: block;
+}
+
+/* Main Content */
+.location-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2rem 1rem 4rem 1rem;
+  z-index: 5;
+  gap: 3rem;
+}
+
+.location-title {
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: white;
+  text-align: center;
+  margin-bottom: 0;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 2rem;
+}
+
+/* Locations Grid */
+.locations-grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  flex-wrap: nowrap;
+}
+
+/* Ship Placeholder */
+.ship-placeholder {
+  margin-top: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  min-width: 300px;
+}
+
+.ship-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+}
+
+.ship-icon {
+  opacity: 0.3;
+}
+
+/* Confirm Button */
+.confirm-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+  z-index: 10;
+}
+
+.confirm-button {
+  padding: 1rem 3rem;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(255, 107, 53, 0.3);
+  color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 107, 53, 0.3);
+}
+
+.confirm-button.active {
+  background: linear-gradient(135deg, #ff6b35 0%, #1ec4f7 100%);
+  color: white;
+  box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4);
+  border: 1px solid transparent;
+}
+
+.confirm-button.active:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(255, 107, 53, 0.5);
+}
+
+.confirm-button:disabled {
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .locations-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .location-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .locations-grid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+  }
+
+  .location-title {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+  }
+
+  .ship-placeholder {
+    min-width: 250px;
+  }
+
+  .confirm-button {
+    padding: 0.875rem 2rem;
+    font-size: 0.9rem;
+  }
+}

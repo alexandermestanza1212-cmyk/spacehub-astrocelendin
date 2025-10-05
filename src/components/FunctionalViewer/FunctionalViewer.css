@@ -1,0 +1,340 @@
+/* src/components/FunctionalViewer/FunctionalViewer.css */
+.functional-viewer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.viewer-3d {
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+}
+
+/* Area controls */ 
+.area-controls {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(10, 22, 40, 0.9);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  backdrop-filter: blur(10px);
+  max-width: 280px;
+  z-index: 10;
+}
+
+.area-controls h3 {
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.area-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.area-select-btn {
+  padding: 0.5rem;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid;
+  border-radius: 4px;
+  color: white;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.area-select-btn:hover {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.area-select-btn.active {
+  background: rgba(59, 130, 246, 0.3);
+  border-width: 2px;
+}
+
+.dimension-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.control-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.control-row label {
+  color: #8b9dc3;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.control-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.control-buttons button {
+  width: 28px;
+  height: 28px;
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid #3b82f6;
+  border-radius: 4px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-buttons button:hover {
+  background: rgba(59, 130, 246, 0.4);
+  transform: scale(1.05);
+}
+
+.control-buttons button:active {
+  transform: scale(0.95);
+}
+
+.control-buttons span {
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+  min-width: 50px;
+  text-align: center;
+}
+
+.area-info {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.status-badge {
+  padding: 0.5rem;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-badge.status-small {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #ef4444;
+  color: #ef4444;
+}
+
+.status-badge.status-recommended {
+  background: rgba(251, 191, 36, 0.2);
+  border: 1px solid #fbbf24;
+  color: #fbbf24;
+}
+
+.status-badge.status-large {
+  background: rgba(74, 222, 128, 0.2);
+  border: 1px solid #4ade80;
+  color: #4ade80;
+}
+
+/* Warnings overlay */
+.warnings-overlay {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 10;
+}
+
+.warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid;
+  padding: 8px 12px;
+  border-radius: 6px;
+  backdrop-filter: blur(10px);
+}
+
+.warning-small {
+  border-color: #ef4444;
+}
+
+.warning-small span {
+  color: #ef4444;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.warning-recommended {
+  border-color: #fbbf24;
+}
+
+.warning-recommended span {
+  color: #fbbf24;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.warning-large {
+  border-color: #4ade80;
+}
+
+.warning-large span {
+  color: #4ade80;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Earth corner */
+.earth-corner {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  width: 120px;
+  height: 120px;
+  z-index: 10;
+}
+
+.earth-sphere {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: 
+    radial-gradient(circle at 30% 30%, #4a90e2, #2563eb 50%, #1e40af);
+  box-shadow: 
+    inset -20px -20px 40px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(37, 99, 235, 0.6);
+  position: relative;
+  overflow: hidden;
+}
+
+.earth-sphere::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 50% 50%, transparent 30%, rgba(0, 0, 0, 0.3) 100%);
+}
+
+.earth-sphere::after {
+  content: '';
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
+  background: 
+    linear-gradient(135deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  animation: earthRotate 20s linear infinite;
+}
+
+@keyframes earthRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Control buttons */
+.viewer-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+}
+
+.control-btn {
+  width: 40px;
+  height: 40px;
+  background: rgba(59, 130, 246, 0.3);
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.control-btn:hover {
+  background: rgba(59, 130, 246, 0.5);
+  transform: scale(1.05);
+}
+
+.control-btn:active {
+  transform: scale(0.95);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .warnings-overlay {
+    top: 10px;
+    right: 10px;
+    gap: 8px;
+  }
+
+  .warning {
+    padding: 6px 10px;
+  }
+
+  .warning span {
+    font-size: 0.65rem;
+  }
+
+  .area-controls {
+    top: 10px;
+    left: 10px;
+    max-width: 240px;
+    padding: 0.75rem;
+  }
+
+  .area-controls h3 {
+    font-size: 0.75rem;
+  }
+
+  .earth-corner {
+    width: 80px;
+    height: 80px;
+    bottom: 10px;
+    left: 10px;
+  }
+
+  .viewer-controls {
+    bottom: 10px;
+    right: 10px;
+  }
+
+  .control-btn {
+    width: 35px;
+    height: 35px;
+  }
+}
