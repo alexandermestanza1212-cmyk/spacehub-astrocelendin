@@ -42,17 +42,27 @@ const MissionLocationPage: React.FC = () => {
   };
 
   const handleConfirm = () => {
-  console.log('🔵 Botón clickeado');
-  console.log('🔵 selectedLocation:', selectedLocation);
-  
-  if (selectedLocation) {
-    const ruta = `/ship-designer/${selectedLocation}`;
-    console.log('🔵 Navegando a:', ruta);
-    navigate(ruta);
-  } else {
-    console.log('🔴 No hay ubicación seleccionada');
-  }
-};
+    console.log('🔵 Botón clickeado');
+    console.log('🔵 selectedLocation:', selectedLocation);
+
+    if (selectedLocation) {
+      // Mapeo de IDs a nombres completos
+      const destinationMap: { [key: string]: string } = {
+        'mars': 'Marte',
+        'moon': 'Luna',
+        'orbit': 'Órbita Terrestre'
+      };
+
+      // ✅ Navega a /design/:location (que coincide con tu ruta)
+      navigate(`/design/${selectedLocation}`, {
+        state: {
+          destination: destinationMap[selectedLocation]
+        }
+      });
+    }
+  };
+
+
 
   return (
     <div className="mission-location-page">
@@ -89,7 +99,7 @@ const MissionLocationPage: React.FC = () => {
         </main>
 
         <div className="confirm-container">
-          <button 
+          <button
             className={`confirm-button ${selectedLocation ? 'active' : ''}`}
             onClick={handleConfirm}
             disabled={!selectedLocation}

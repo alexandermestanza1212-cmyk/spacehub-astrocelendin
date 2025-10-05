@@ -6,7 +6,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
 import MissionLocationPage from './pages/MissionLocationPage';
-import ShipDesignerPage from './pages/ShipDesignerPage';
 import DesignPage from './pages/DesignPage';
 import MissionReportPage from './pages/MissionReportPage';
 import RegisterPage from './pages/RegisterPage';
@@ -50,14 +49,6 @@ function App() {
             element={
               <ProtectedRoute>
                 <MissionLocationPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ship-designer/:location"
-            element={
-              <ProtectedRoute>
-                <DesignPage />
               </ProtectedRoute>
             }
           />

@@ -33,15 +33,17 @@ const MissionReportPage: React.FC = () => {
 
   useEffect(() => {
     if (!designData) {
+      console.log('❌ No hay designData, redirigiendo...');
       navigate('/');
       return;
     }
 
+    console.log('✅ designData cargado:', designData);
     calculateSuccess();
   }, [designData, navigate]);
 
   useEffect(() => {
-    if (!showPreview || !previewContainerRef.current) return;
+    if (!showPreview || !previewContainerRef.current || !designData) return;
 
     const container = previewContainerRef.current;
     const width = container.clientWidth;
@@ -72,6 +74,7 @@ const MissionReportPage: React.FC = () => {
     directionalLight.position.set(5, 5, 5);
     scene.add(directionalLight);
 
+    // Crear hábitat principal
     let geometry: THREE.BufferGeometry;
     const height_ship = designData.dimensions.alto || 10;
     const width_ship = designData.dimensions.ancho || 5;
@@ -98,7 +101,7 @@ const MissionReportPage: React.FC = () => {
       metalness: 0.6,
       roughness: 0.3,
       transparent: true,
-      opacity: 0.9
+      opacity: 0.3 // Más transparente para ver las áreas internas
     });
 
     const mesh = new THREE.Mesh(geometry, material);
@@ -109,6 +112,63 @@ const MissionReportPage: React.FC = () => {
     const wireframe = new THREE.LineSegments(edges, lineMaterial);
     mesh.add(wireframe);
 
+    // ✅ AGREGAR ÁREAS FUNCIONALES COMO CUBOS
+    if (designData.areas && designData.areas.length > 0) {
+      console.log('🏠 Renderizando áreas:', designData.areas);
+      
+      // Colores para cada tipo de área
+      const areaColors: { [key: string]: number } = {
+        'descanso': 0x10b981,    // verde
+        'gimnasio': 0xf59e0b,    // amarillo
+        'higiene': 0x3b82f6,     // azul
+        'cocina': 0xef4444,      // rojo
+        'control': 0x8b5cf6,     // púrpura
+        'enfermeria': 0xec4899,  // rosa
+        'habitacion': 0x10b981,
+        'laboratorio': 0xf59e0b,
+        'comedor': 0xef4444
+      };
+
+      designData.areas.forEach((area, index) => {
+        const areaGeometry = new THREE.BoxGeometry(
+          area.size.width,
+          area.size.height,
+          area.size.depth
+        );
+
+        const areaColor = areaColors[area.id.toLowerCase()] || 0x6366f1;
+
+        const areaMaterial = new THREE.MeshStandardMaterial({
+          color: areaColor,
+          metalness: 0.3,
+          roughness: 0.7,
+          transparent: true,
+          opacity: 0.8
+        });
+
+        const areaMesh = new THREE.Mesh(areaGeometry, areaMaterial);
+
+        // Posicionar las áreas en una distribución circular o vertical
+        const angle = (index / designData.areas.length) * Math.PI * 2;
+        const radius = width_ship / 3;
+        
+        areaMesh.position.x = Math.cos(angle) * radius;
+        areaMesh.position.y = (index - designData.areas.length / 2) * (area.size.height + 0.5);
+        areaMesh.position.z = Math.sin(angle) * radius;
+
+        // Wireframe para las áreas
+        const areaEdges = new THREE.EdgesGeometry(areaGeometry);
+        const areaWireframe = new THREE.LineSegments(
+          areaEdges,
+          new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 })
+        );
+        areaMesh.add(areaWireframe);
+
+        scene.add(areaMesh);
+      });
+    }
+
+    // Agregar planeta/luna según destino
     if (designData.missionDestination === 'Órbita Terrestre') {
       const earthGeometry = new THREE.SphereGeometry(8, 32, 32);
       const earthMaterial = new THREE.MeshStandardMaterial({
@@ -147,6 +207,7 @@ const MissionReportPage: React.FC = () => {
       scene.add(mars);
     }
 
+    // Estrellas
     const starsGeometry = new THREE.BufferGeometry();
     const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.1 });
     const starsVertices = [];
@@ -160,6 +221,7 @@ const MissionReportPage: React.FC = () => {
     const stars = new THREE.Points(starsGeometry, starsMaterial);
     scene.add(stars);
 
+    // Animación
     let animationId: number;
     const animate = () => {
       animationId = requestAnimationFrame(animate);
@@ -178,7 +240,10 @@ const MissionReportPage: React.FC = () => {
   }, [showPreview, designData]);
 
   const calculateSuccess = () => {
-    if (!designData.areas) return;
+    if (!designData?.areas) {
+      console.log('⚠️ No hay áreas para calcular');
+      return;
+    }
 
     let score = 100;
     const issues: string[] = [];
@@ -224,6 +289,10 @@ const MissionReportPage: React.FC = () => {
     if (successPercentage >= 70) return '#fbbf24';
     return '#ef4444';
   };
+
+  if (!designData) {
+    return <div>Cargando...</div>;
+  }
 
   return (
     <div className="mission-report-page">

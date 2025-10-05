@@ -1,39 +1,105 @@
 // src/pages/DesignPage.tsx
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import DesignPanel from '../components/DesignPanel/DesignPanel';
 import ThreeViewer from '../components/ThreeViewer/ThreeViewer';
 import FunctionalViewer from '../components/FunctionalViewer/FunctionalViewer';
 import './DesignPage.css';
 
 const DesignPage: React.FC = () => {
-  const { location } = useParams<{ location: string }>();
+  const { location: locationParam } = useParams<{ location: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const [currentView, setCurrentView] = useState<'design' | 'functional'>('design');
   const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
+  
+  // Mapeo de IDs a nombres completos para el destino
+  const destinationMap: { [key: string]: string } = {
+    'mars': 'Marte',
+    'moon': 'Luna',
+    'orbit': 'Órbita Terrestre'
+  };
+
+  // Obtener el destino del state o del parámetro
+  const missionDestination = location.state?.destination || 
+                             destinationMap[locationParam || 'orbit'] ||
+                             'Órbita Terrestre';
+
   const [designData, setDesignData] = useState({
     habitatShape: 'cilindro',
     dimensions: { alto: 10, ancho: 5 },
-    functionalAreas: [], // ← AGREGADO: Campo necesario para DesignPanel
-    missionDestination: 'Órbita Terrestre',
+    functionalAreas: [],
+    missionDestination: missionDestination,
+    crew: 'Científicos',
     duration: 50,
     crewSize: 16
   });
+
   const [functionalAreas, setFunctionalAreas] = useState<any[]>([]);
 
+  // Actualizar missionDestination cuando cambie
+  useEffect(() => {
+    setDesignData(prev => ({
+      ...prev,
+      missionDestination: missionDestination
+    }));
+  }, [missionDestination]);
+
   const handleDesignChange = (data: any) => {
-    setDesignData(data);
+    setDesignData(prev => ({
+      ...prev,
+      ...data,
+      missionDestination: missionDestination // Mantener el destino
+    }));
+  };
+
+  const handleAreasUpdate = (areas: any[]) => {
+    setFunctionalAreas(areas);
   };
 
   const handleSaveDesign = () => {
-    // Preparar datos para el reporte
+    // Preparar datos completos para el reporte
     const reportData = {
-      ...designData,
-      areas: functionalAreas
+      habitatShape: designData.habitatShape,
+      dimensions: designData.dimensions,
+      missionDestination: missionDestination,
+      crew: designData.crew,
+      duration: designData.duration,
+      crewSize: designData.crewSize,
+      areas: functionalAreas.length > 0 ? functionalAreas : [
+        // Áreas por defecto si no hay ninguna configurada
+        {
+          id: 'habitacion',
+          name: 'Habitación',
+          size: { width: 3, height: 2.5, depth: 2 },
+          areaPerPerson: 6,
+          status: 'optimal'
+        },
+        {
+          id: 'laboratorio',
+          name: 'Laboratorio',
+          size: { width: 5, height: 3, depth: 4 },
+          areaPerPerson: 8,
+          status: 'optimal'
+        }
+      ]
     };
 
-    // Navegar a la página de reporte
-    navigate('/mission-report', { state: { designData: reportData } });
+    console.log('📊 Enviando al reporte:', reportData);
+    console.log('🌍 Destino:', reportData.missionDestination);
+
+    // Navegar al reporte con los datos
+    navigate('/mission-report', { 
+      state: { designData: reportData } 
+    });
+  };
+
+  const toggleArea = (areaId: string) => {
+    setSelectedAreas(prev => 
+      prev.includes(areaId) 
+        ? prev.filter(a => a !== areaId)
+        : [...prev, areaId]
+    );
   };
 
   return (
@@ -48,6 +114,11 @@ const DesignPage: React.FC = () => {
             </svg>
             <span className="logo-text-main">SpaceHub</span>
             <span className="logo-text-sub">Designer</span>
+          </div>
+
+          {/* Mostrar destino actual */}
+          <div className="mission-info">
+            <span className="mission-destination">📍 Destino: {missionDestination}</span>
           </div>
 
           {/* Botones de navegación entre vistas */}
@@ -71,7 +142,7 @@ const DesignPage: React.FC = () => {
           {currentView === 'design' ? (
             <>
               <DesignPanel 
-                location={location || 'unknown'}
+                location={locationParam || 'unknown'}
                 designData={designData}
                 onDesignChange={handleDesignChange}
               />
@@ -87,13 +158,7 @@ const DesignPage: React.FC = () => {
                     <input 
                       type="checkbox" 
                       checked={selectedAreas.includes('descanso')}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedAreas([...selectedAreas, 'descanso']);
-                        } else {
-                          setSelectedAreas(selectedAreas.filter(a => a !== 'descanso'));
-                        }
-                      }}
+                      onChange={() => toggleArea('descanso')}
                     />
                     Descanso (Literas)
                   </label>
@@ -101,13 +166,7 @@ const DesignPage: React.FC = () => {
                     <input 
                       type="checkbox"
                       checked={selectedAreas.includes('gimnasio')}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedAreas([...selectedAreas, 'gimnasio']);
-                        } else {
-                          setSelectedAreas(selectedAreas.filter(a => a !== 'gimnasio'));
-                        }
-                      }}
+                      onChange={() => toggleArea('gimnasio')}
                     />
                     Gimnasio
                   </label>
@@ -115,13 +174,7 @@ const DesignPage: React.FC = () => {
                     <input 
                       type="checkbox"
                       checked={selectedAreas.includes('higiene')}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedAreas([...selectedAreas, 'higiene']);
-                        } else {
-                          setSelectedAreas(selectedAreas.filter(a => a !== 'higiene'));
-                        }
-                      }}
+                      onChange={() => toggleArea('higiene')}
                     />
                     Higiene
                   </label>
@@ -129,13 +182,7 @@ const DesignPage: React.FC = () => {
                     <input 
                       type="checkbox"
                       checked={selectedAreas.includes('cocina')}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedAreas([...selectedAreas, 'cocina']);
-                        } else {
-                          setSelectedAreas(selectedAreas.filter(a => a !== 'cocina'));
-                        }
-                      }}
+                      onChange={() => toggleArea('cocina')}
                     />
                     Cocina/Alimentos
                   </label>
@@ -143,13 +190,7 @@ const DesignPage: React.FC = () => {
                     <input 
                       type="checkbox"
                       checked={selectedAreas.includes('control')}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedAreas([...selectedAreas, 'control']);
-                        } else {
-                          setSelectedAreas(selectedAreas.filter(a => a !== 'control'));
-                        }
-                      }}
+                      onChange={() => toggleArea('control')}
                     />
                     Control Ambiental (ECLSS)
                   </label>
@@ -157,13 +198,7 @@ const DesignPage: React.FC = () => {
                     <input 
                       type="checkbox"
                       checked={selectedAreas.includes('enfermeria')}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedAreas([...selectedAreas, 'enfermeria']);
-                        } else {
-                          setSelectedAreas(selectedAreas.filter(a => a !== 'enfermeria'));
-                        }
-                      }}
+                      onChange={() => toggleArea('enfermeria')}
                     />
                     Enfermería
                   </label>
@@ -175,7 +210,7 @@ const DesignPage: React.FC = () => {
               <FunctionalViewer 
                 selectedAreas={selectedAreas}
                 designData={designData}
-                onAreasUpdate={setFunctionalAreas}
+                onAreasUpdate={handleAreasUpdate}
               />
             </div>
           )}
